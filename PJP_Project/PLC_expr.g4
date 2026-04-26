@@ -14,6 +14,7 @@ statement
     | 'do' statement 'while' '(' expr ')'              # doWhileStmt
     | 'repeat' statement 'until' '(' expr ')'          # repeatStmt
     | 'for' '(' expr ';' expr ';' expr ')' statement   # forLoop
+    | 'abs' '(' expr ')'                               # abs
     | expr ';'                                         # printExpr
     ;
 

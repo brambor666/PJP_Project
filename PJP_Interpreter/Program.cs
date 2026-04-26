@@ -103,6 +103,11 @@ namespace PJP_Interpreter
 					else { double b = (double)stack.Pop(); double a = (double)stack.Pop(); stack.Push(a / b); }
 					break;
 
+				case "abs":
+					if (argument == "I") { stack.Push(Math.Abs((int)stack.Pop())); }
+					else { stack.Push(Math.Abs((float)stack.Pop())); }
+					break;
+
 				case "mod":
 					{
 						int b = (int)stack.Pop(); int a = (int)stack.Pop();

@@ -383,5 +383,14 @@ namespace PJP_Project
 
 			return type;
 		}
+
+		public override Type VisitAbs([NotNull] PLC_exprParser.AbsContext context)
+		{
+			Type type = Visit(context.expr());
+
+			Emit($"abs{TypeCode(type)}");
+
+			return type;
+		}
 	}
 }

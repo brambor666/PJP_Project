@@ -362,6 +362,22 @@ namespace PJP_Project
 			return Type.Error;
 		}
 
+		public override Type VisitAbs([NotNull] PLC_exprParser.AbsContext context)
+		{
+			Type type = Visit(context.expr());
+
+			if (type == Type.Error)
+				return Type.Error;
+
+			if (type == Type.Int) return Type.Int;
+			if (type == Type.Float) return Type.Float;
+
+
+			Errors.ReportError(context.Start,
+				$"abs() cannot be applied to type {type}.");
+			return Type.Error;
+		}
+
 
 
 	}
