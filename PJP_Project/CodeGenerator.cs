@@ -202,7 +202,7 @@ namespace PJP_Project
 			Type operandType = (left == Type.Float || right == Type.Float) ? Type.Float : left;
 			Emit($"eq {TypeCode(operandType)}");
 
-			if (context.op.Text == "!=")
+			if (context.op.Text == "!=" || context.op.Text == "<>")
 				Emit("not");
 
 			return Type.Bool;
@@ -303,5 +303,69 @@ namespace PJP_Project
 			return Type.Error;
 		}
 
+
+		public override Type VisitDoWhileStmt([NotNull] PLC_exprParser.DoWhileStmtContext context)
+		{
+			int startLabel = NewLabel();
+			int endLabel = NewLabel();
+
+			Emit($"label {startLabel}");
+			Visit(context.statement());
+			Visit(context.expr());
+			Emit($"fjmp {endLabel}");
+			Emit($"jmp {startLabel}");
+			Emit($"label {endLabel}");
+
+			return Type.Error;
+		}
+
+		public override Type VisitForLoop([NotNull] PLC_exprParser.ForLoopContext context)
+		{
+			Visit(context.expr()[0]);
+			Emit("pop");
+
+
+			int startLabel = NewLabel();
+			int endLabel = NewLabel();
+
+			Emit($"label {startLabel}");
+			Visit(context.expr()[1]);
+			Emit($"fjmp {endLabel}");
+
+			Visit(context.statement());
+			Visit(context.expr()[2]);
+			Emit("pop");
+			Emit($"jmp {startLabel}");
+			Emit($"label {endLabel}");
+
+			return Type.Error;
+		}
+
+
+		public override Type VisitPower([NotNull] PLC_exprParser.PowerContext context)
+		{
+			Type left = Visit(context.expr()[0]);
+			Type right = Visit(context.expr()[1]);
+
+
+			EmitPromotion(left, right);
+			Type result = (left == Type.Float || right == Type.Float) ? Type.Float : Type.Int;
+			Emit($"pow {TypeCode(result)}");
+			return result;
+		}
+
+		public override Type VisitIncrement([NotNull] PLC_exprParser.IncrementContext context)
+		{
+			string name = context.IDENTIFIER().GetText();
+			Type type = symbolTable[context.IDENTIFIER().Symbol];
+
+			Emit($"load {name}");    // load original value (this is the return value)
+			Emit($"load {name}");    // load it again to increment
+			Emit($"push I 1");       // push 1
+			Emit($"add I");          // add
+			Emit($"save {name}");    // save back to variable
+
+			return type;
+		}
 	}
 }

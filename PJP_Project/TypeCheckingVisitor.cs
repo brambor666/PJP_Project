@@ -286,10 +286,70 @@ namespace PJP_Project
 			return Type.Error;
 		}
 
+		public override Type VisitDoWhileStmt([NotNull] PLC_exprParser.DoWhileStmtContext context)
+		{
+			Visit(context.statement());
+			Type condition = Visit(context.expr());
+
+			if (condition != Type.Bool && condition != Type.Error)
+				Errors.ReportError(context.Start, $"Condition of 'while' must be bool, got {condition}.");
+
+			return Type.Error;
+		}
+
+		public override Type VisitForLoop([NotNull] PLC_exprParser.ForLoopContext context)
+		{
+
+			Type init = Visit(context.expr()[0]);
+			Type condition = Visit(context.expr()[1]);
+			Type step = Visit(context.expr()[2]);
+			Visit(context.statement());
+
+			if (condition != Type.Bool && condition != Type.Error)
+				Errors.ReportError(context.Start, $"Condition of 'for' must be bool, got {condition}.");
+
+
+
+			return Type.Error;
+		}
 
 
 
 
+
+		public override Type VisitPower([NotNull] PLC_exprParser.PowerContext context)
+		{
+			Type left = Visit(context.expr()[0]);
+			Type right = Visit(context.expr()[1]);
+
+			if (left == Type.Error || right == Type.Error)
+				return Type.Error;
+
+
+			if (left == Type.Int && right == Type.Int) return Type.Int;
+			if (left == Type.Float && right == Type.Float) return Type.Float;
+			if (left == Type.Int && right == Type.Float) return Type.Float;
+			if (left == Type.Float && right == Type.Int) return Type.Float;
+
+			Errors.ReportError(context.Start, $"Operator '**' cannot be applied to types {left} and {right}.");
+			return Type.Error;
+		}
+
+
+		public override Type VisitIncrement([NotNull] PLC_exprParser.IncrementContext context)
+		{
+			Type type = symbolTable[context.IDENTIFIER().Symbol];
+
+			if (type == Type.Error)
+				return Type.Error;
+
+			if (type == Type.Int) return Type.Int;
+
+
+			Errors.ReportError(context.IDENTIFIER().Symbol,
+				$"Cannot increment variable '{context.IDENTIFIER().GetText()}' of type {type}.");
+			return Type.Error;
+		}
 
 
 

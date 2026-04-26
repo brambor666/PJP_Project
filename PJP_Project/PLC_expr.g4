@@ -11,16 +11,20 @@ statement
     | '{' statement* '}'                               # block
     | 'if' '(' expr ')' statement ('else' statement)?  # ifStmt
     | 'while' '(' expr ')' statement                   # whileStmt
+    | 'do' statement 'while' '(' expr ')'              # doWhileStmt
+    | 'for' '(' expr ';' expr ';' expr ')' statement   # forLoop
     | expr ';'                                         # printExpr
     ;
 
 expr
-    : '-' expr                              # unaryMinus
-    | '!' expr                              # not
+    : IDENTIFIER '++'    # increment    
+    | '-' expr                             # unaryMinus
+    | '!' expr                             # not
+    | <assoc=right> expr '**' expr         # power
     | expr op=('*'|'/'|'%') expr           # mulDivMod
     | expr op=('+'|'-'|'.') expr           # addSubConcat
     | expr op=('<'|'>') expr               # relational
-    | expr op=('=='|'!=') expr             # equality
+    | expr op=('=='|'!='|'<>') expr        # equality
     | expr '&&' expr                       # and
     | expr '||' expr                       # or
     | <assoc=right> IDENTIFIER '=' expr    # assignment

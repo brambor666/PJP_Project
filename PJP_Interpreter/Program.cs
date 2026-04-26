@@ -77,6 +77,7 @@ namespace PJP_Interpreter
 					variables[argument] = stack.Pop();
 					break;
 
+
 				case "add":
 					if (argument == "I") { int b = (int)stack.Pop(); int a = (int)stack.Pop(); stack.Push(a + b); }
 					else { double b = (double)stack.Pop(); double a = (double)stack.Pop(); stack.Push(a + b); }
@@ -90,6 +91,11 @@ namespace PJP_Interpreter
 				case "mul":
 					if (argument == "I") { int b = (int)stack.Pop(); int a = (int)stack.Pop(); stack.Push(a * b); }
 					else { double b = (double)stack.Pop(); double a = (double)stack.Pop(); stack.Push(a * b); }
+					break;
+
+				case "pow":
+					if (argument == "I") { int b = (int)stack.Pop(); int a = (int)stack.Pop(); stack.Push((int)Math.Pow(a, b)); }
+					else { double b = (double)stack.Pop(); double a = (double)stack.Pop(); stack.Push(Math.Pow(a, b)); }
 					break;
 
 				case "div":
