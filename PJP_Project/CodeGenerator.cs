@@ -7,6 +7,7 @@ namespace PJP_Project
 		private SymbolTable symbolTable = new SymbolTable();
 		private StreamWriter writer;
 		private int labelCounter = 0;
+		private Stack<int> breakLabels = new Stack<int>();
 
 		public CodeGenerator(StreamWriter writer)
 		{
@@ -296,7 +297,9 @@ namespace PJP_Project
 			Emit($"label {startLabel}");
 			Visit(context.expr());
 			Emit($"fjmp {endLabel}");
+			breakLabels.Push(endLabel);
 			Visit(context.statement());
+			breakLabels.Pop();
 			Emit($"jmp {startLabel}");
 			Emit($"label {endLabel}");
 
@@ -310,7 +313,9 @@ namespace PJP_Project
 			int endLabel = NewLabel();
 
 			Emit($"label {startLabel}");
+			breakLabels.Push(endLabel);
 			Visit(context.statement());
+			breakLabels.Pop();
 			Visit(context.expr());
 			Emit($"fjmp {endLabel}");
 			Emit($"jmp {startLabel}");
@@ -325,7 +330,9 @@ namespace PJP_Project
 			int endLabel = NewLabel();
 
 			Emit($"label {startLabel}");
+			breakLabels.Push(endLabel);
 			Visit(context.statement());
+			breakLabels.Pop();
 			Visit(context.expr());
 			Emit("not");
 			Emit($"fjmp {endLabel}");
@@ -348,7 +355,9 @@ namespace PJP_Project
 			Visit(context.expr()[1]);
 			Emit($"fjmp {endLabel}");
 
+			breakLabels.Push(endLabel);
 			Visit(context.statement());
+			breakLabels.Pop();
 			Visit(context.expr()[2]);
 			Emit("pop");
 			Emit($"jmp {startLabel}");
@@ -356,6 +365,14 @@ namespace PJP_Project
 
 			return Type.Error;
 		}
+
+		public override Type VisitBreak([NotNull] PLC_exprParser.BreakContext context)
+		{
+
+			Emit($"jmp {breakLabels.Pop()}");
+			return Type.Error;
+		}
+
 
 
 		public override Type VisitPower([NotNull] PLC_exprParser.PowerContext context)
@@ -398,6 +415,7 @@ namespace PJP_Project
 			Visit(context.expr());
 
 			Emit($"toint");
+
 
 			return Type.Int;
 		}

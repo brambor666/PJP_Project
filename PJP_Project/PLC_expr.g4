@@ -16,6 +16,7 @@ statement
     | 'for' '(' expr ';' expr ';' expr ')' statement   # forLoop
     | 'abs' '(' expr ')'                               # abs
     | 'toint' '(' expr ')'                             # toint
+    | 'break' ';'                                      # break
     | expr ';'                                         # printExpr
     ;
 

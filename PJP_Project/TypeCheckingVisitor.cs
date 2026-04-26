@@ -393,7 +393,10 @@ namespace PJP_Project
 			return Type.Error;
 		}
 
-
+		public override Type VisitBreak([NotNull] PLC_exprParser.BreakContext context)
+		{
+			return Type.Error;
+		}
 
 	}
 
