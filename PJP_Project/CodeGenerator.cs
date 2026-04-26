@@ -388,9 +388,18 @@ namespace PJP_Project
 		{
 			Type type = Visit(context.expr());
 
-			Emit($"abs{TypeCode(type)}");
+			Emit($"abs {TypeCode(type)}");
 
 			return type;
+		}
+
+		public override Type VisitToint([NotNull] PLC_exprParser.TointContext context)
+		{
+			Visit(context.expr());
+
+			Emit($"toint");
+
+			return Type.Int;
 		}
 	}
 }

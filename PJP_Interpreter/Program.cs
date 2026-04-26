@@ -108,6 +108,10 @@ namespace PJP_Interpreter
 					else { stack.Push(Math.Abs((float)stack.Pop())); }
 					break;
 
+				case "toint":
+					if (argument == "S") { stack.Push(int.Parse((string)stack.Pop())); }
+					break;
+
 				case "mod":
 					{
 						int b = (int)stack.Pop(); int a = (int)stack.Pop();

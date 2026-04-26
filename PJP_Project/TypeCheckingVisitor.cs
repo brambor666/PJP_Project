@@ -378,6 +378,21 @@ namespace PJP_Project
 			return Type.Error;
 		}
 
+		public override Type VisitToint([NotNull] PLC_exprParser.TointContext context)
+		{
+			Type type = Visit(context.expr());
+
+
+			if (type == Type.Error)
+				return Type.Error;
+
+			if (type == Type.String) return Type.Int;
+
+			Errors.ReportError(context.Start,
+				$"toint() cannot be used on type {type}.");
+			return Type.Error;
+		}
+
 
 
 	}

@@ -15,6 +15,7 @@ statement
     | 'repeat' statement 'until' '(' expr ')'          # repeatStmt
     | 'for' '(' expr ';' expr ';' expr ')' statement   # forLoop
     | 'abs' '(' expr ')'                               # abs
+    | 'toint' '(' expr ')'                             # toint
     | expr ';'                                         # printExpr
     ;
 
