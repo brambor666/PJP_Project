@@ -319,6 +319,22 @@ namespace PJP_Project
 			return Type.Error;
 		}
 
+		public override Type VisitRepeatStmt([NotNull] PLC_exprParser.RepeatStmtContext context)
+		{
+			int startLabel = NewLabel();
+			int endLabel = NewLabel();
+
+			Emit($"label {startLabel}");
+			Visit(context.statement());
+			Visit(context.expr());
+			Emit("not");
+			Emit($"fjmp {endLabel}");
+			Emit($"jmp {startLabel}");
+			Emit($"label {endLabel}");
+
+			return Type.Error;
+		}
+
 		public override Type VisitForLoop([NotNull] PLC_exprParser.ForLoopContext context)
 		{
 			Visit(context.expr()[0]);

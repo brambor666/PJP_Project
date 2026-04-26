@@ -297,6 +297,17 @@ namespace PJP_Project
 			return Type.Error;
 		}
 
+		public override Type VisitRepeatStmt([NotNull] PLC_exprParser.RepeatStmtContext context)
+		{
+			Visit(context.statement());
+			Type condition = Visit(context.expr());
+
+			if (condition != Type.Bool && condition != Type.Error)
+				Errors.ReportError(context.Start, $"Condition of 'repeat' must be bool, got {condition}.");
+
+			return Type.Error;
+		}
+
 		public override Type VisitForLoop([NotNull] PLC_exprParser.ForLoopContext context)
 		{
 

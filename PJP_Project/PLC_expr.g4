@@ -12,6 +12,7 @@ statement
     | 'if' '(' expr ')' statement ('else' statement)?  # ifStmt
     | 'while' '(' expr ')' statement                   # whileStmt
     | 'do' statement 'while' '(' expr ')'              # doWhileStmt
+    | 'repeat' statement 'until' '(' expr ')'          # repeatStmt
     | 'for' '(' expr ';' expr ';' expr ')' statement   # forLoop
     | expr ';'                                         # printExpr
     ;
