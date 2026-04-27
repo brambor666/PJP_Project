@@ -401,6 +401,21 @@ namespace PJP_Project
 			return type;
 		}
 
+		public override Type VisitAddAssign([NotNull] PLC_exprParser.AddAssignContext context)
+		{
+			string name = context.IDENTIFIER().GetText();
+			Type left = symbolTable[context.IDENTIFIER().Symbol];
+
+			Emit($"load {name}");
+			Type right = Visit(context.expr());
+			EmitPromotion(left, right);
+			Type result = (left == Type.Float || right == Type.Float) ? Type.Float : Type.Int;
+			Emit($"add {TypeCode(result)}");
+			Emit($"save {name}");
+			Emit($"load {name}");
+			return result;
+		}
+
 		public override Type VisitAbs([NotNull] PLC_exprParser.AbsContext context)
 		{
 			Type type = Visit(context.expr());

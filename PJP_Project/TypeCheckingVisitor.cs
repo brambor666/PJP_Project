@@ -21,6 +21,7 @@ namespace PJP_Project
 			{
 				case "int": type = Type.Int; break;
 				case "float": type = Type.Float; break;
+				case "double": type = Type.Float; break;
 				case "bool": type = Type.Bool; break;
 				case "string": type = Type.String; break;
 				default: type = Type.Error; break;
@@ -395,6 +396,30 @@ namespace PJP_Project
 
 		public override Type VisitBreak([NotNull] PLC_exprParser.BreakContext context)
 		{
+			return Type.Error;
+		}
+
+		public override Type VisitAddAssign([NotNull] PLC_exprParser.AddAssignContext context)
+		{
+			Type right = Visit(context.expr());
+			Type left = symbolTable[context.IDENTIFIER().Symbol];
+
+			if (left == Type.Error || right == Type.Error)
+				return Type.Error;
+
+			if (left == Type.Int && right == Type.Float)
+			{
+				Errors.ReportError(context.IDENTIFIER().Symbol,
+					$"Cannot apply += with float to int variable '{context.IDENTIFIER().GetText()}'.");
+				return Type.Error;
+			}
+
+			if (left == Type.Float && right == Type.Int) return Type.Float;
+			if (left == Type.Float && right == Type.Float) return Type.Float;
+			if (left == Type.Int && right == Type.Int) return Type.Int;
+
+			Errors.ReportError(context.IDENTIFIER().Symbol,
+				$"Cannot assign {right} to variable '{context.IDENTIFIER().GetText()}' of type {left}.");
 			return Type.Error;
 		}
 

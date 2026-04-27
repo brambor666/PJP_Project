@@ -21,7 +21,7 @@ statement
     ;
 
 expr
-    : IDENTIFIER '++'    # increment    
+    : IDENTIFIER '++'                      # increment    
     | '-' expr                             # unaryMinus
     | '!' expr                             # not
     | <assoc=right> expr '**' expr         # power
@@ -32,6 +32,7 @@ expr
     | expr '&&' expr                       # and
     | expr '||' expr                       # or
     | <assoc=right> IDENTIFIER '=' expr    # assignment
+    | <assoc=right> IDENTIFIER '+=' expr   # addAssign
     | '(' expr ')'                         # parens
     | IDENTIFIER                           # id
     | INT                                  # int
@@ -44,6 +45,7 @@ expr
 primitiveType
     : 'int'
     | 'float'
+    | 'double'
     | 'bool'
     | 'string'
     ;
